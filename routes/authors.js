@@ -54,7 +54,6 @@ router.get('/:id', async (req, res) => {
     } catch {
         res.redirect('/')
     }
-    res.send('Show Author' + req.params.id)
 })
 
 router.get('/:id/edit', async (req, res) => {
@@ -78,7 +77,7 @@ router.put('/:id', async (req, res) => {
         if(author == null) {
             res.redirect('/')
         } else {
-            res.render('authors/new', {
+            res.render('authors/edit', {
                 author: author,
                 errorMessage: 'Error updating Author'
             })

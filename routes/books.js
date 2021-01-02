@@ -2,7 +2,9 @@ const express = require('express')
 const router = express.Router()
 const Book = require('../models/book')
 const Author = require('../models/author')
-const { SSL_OP_COOKIE_EXCHANGE } = require('constants')
+const imageMimeTypes = ['image/jpeg', 'image/png', 'images/gif']
+// const { SSL_OP_COOKIE_EXCHANGE } = require('constants')
+
 
 //all
 router.get('/', async (req, res) => {
@@ -28,7 +30,7 @@ router.get('/', async (req, res) => {
 })
 
 //new
-router.get('/new', async (req, res) => {
+router.get('/new', (req, res) => {  // took out async 
     renderNewPage(res, new Book())
 })
 
@@ -47,7 +49,6 @@ router.post('/', async (req, res) => {
       const newBook = await book.save()
       res.redirect(`books/${newBook.id}`)  
     } catch {
-
         renderNewPage(res, book, true)
     }
 })
@@ -55,7 +56,7 @@ router.post('/', async (req, res) => {
 //show
 router.get('/:id', async (req, res) => {
     try {
-        const book = await (await Book.findById(req.params.id).populate('author')).exec()
+        const book = await Book.findById(req.params.id).populate('author').exec()
         res.render('books/show', { book: book })
     } catch {
         res.redirect('/')
@@ -101,7 +102,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     let book
     try {
-        book - await Book.findById(req.param.id)
+        book = await Book.findById(req.params.id)
         await book.remove()
         res.redirect('/books')
     } catch {
@@ -146,7 +147,7 @@ async function renderFormPage(res, book, form, hasError = false) {
 
 function saveCover(book, coverEncoded) {
     if (coverEncoded == null) return
-    const cover = JSON.parse(coverEncoded) 
+    const cover = JSON.parse(coverEncoded)
     if (cover != null && imageMimeTypes.includes(cover.type)) {
         book.coverImage = new Buffer.from(cover.data, 'base64')
         book.coverImageType = cover.type
