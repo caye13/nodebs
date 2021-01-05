@@ -3,8 +3,6 @@ const router = express.Router()
 const Book = require('../models/book')
 const Author = require('../models/author')
 const imageMimeTypes = ['image/jpeg', 'image/png', 'images/gif']
-// const { SSL_OP_COOKIE_EXCHANGE } = require('constants')
-
 
 //all
 router.get('/', async (req, res) => {
